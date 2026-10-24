@@ -1,0 +1,12 @@
+# ================================================================
+# MERSİNOVA - ELEVENLABS.IO YAPAY ZEKA SES ENTEGRASYONU
+# ================================================================
+# ElevenLabs hesabınızdan aldığınız API anahtarını (xi-...) 
+# aşağıdaki satıra yapıştırıp kaydedebilirsiniz.
+#
+# Örnek:
+# xi-1234567890abcdef1234567890abcdef
+#
+# (Not: Anahtar girilmezse MersiNova akıcı ve doğal yüksek çözünürlüklü
+#  yerleşik yapay zeka ses motorunu kullanmaya devam eder.)
+# ================================================================

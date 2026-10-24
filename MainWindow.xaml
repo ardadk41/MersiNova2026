@@ -1,0 +1,2116 @@
+<Window x:Class="MersiNova.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MersiNova — Akıllı Meyve &amp; Tarım Yapay Zekası &amp; Sesli Asistan"
+        Height="880" Width="1440"
+        MinHeight="720" MinWidth="1180"
+        WindowStartupLocation="CenterScreen"
+        Background="#081220"
+        FontFamily="Segoe UI">
+
+    <Window.Resources>
+        <Style x:Key="DotStyle" TargetType="Ellipse">
+            <Setter Property="Width" Value="7"/>
+            <Setter Property="Height" Value="7"/>
+            <Setter Property="Fill" Value="#00E676"/>
+            <Setter Property="Margin" Value="2,0"/>
+        </Style>
+
+        <!-- Modern Horizontal Chip Style -->
+        <Style x:Key="QuickChipStyle" TargetType="Button">
+            <Setter Property="Background" Value="#102544"/>
+            <Setter Property="Foreground" Value="#B2C7DF"/>
+            <Setter Property="FontSize" Value="11.5"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="12,7"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}"
+                                BorderBrush="#1C3D68" BorderThickness="1.2"
+                                CornerRadius="14" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#173E6D"/>
+                                <Setter TargetName="bd" Property="BorderBrush" Value="#00E676"/>
+                                <Setter Property="Foreground" Value="#00E676"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SliderInputStyle" TargetType="Slider">
+            <Setter Property="Margin" Value="0,6,0,10"/>
+            <Setter Property="Foreground" Value="#00E676"/>
+            <Setter Property="IsSnapToTickEnabled" Value="True"/>
+        </Style>
+
+        <!-- Modern High-Contrast Citrus ComboBox Style (Names 100% visible) -->
+        <ControlTemplate x:Key="ModernCitrusComboBoxTemplate" TargetType="ComboBox">
+            <Grid>
+                <ToggleButton x:Name="ToggleButton" ClickMode="Press" Focusable="False"
+                              IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                    <ToggleButton.Template>
+                        <ControlTemplate TargetType="ToggleButton">
+                            <Border x:Name="Border" Background="#0C203A" BorderBrush="#00E676" BorderThickness="1.5" CornerRadius="10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="34"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="1" Background="#102544" CornerRadius="0,8,8,0">
+                                        <TextBlock Text="▼" Foreground="#00E676" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border" Property="BorderBrush" Value="#FFD600"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </ToggleButton.Template>
+                </ToggleButton>
+                <TextBlock x:Name="SelectedItemText" IsHitTestVisible="False"
+                           Text="{Binding Path=SelectedItem, RelativeSource={RelativeSource TemplatedParent}}"
+                           Foreground="#ECEFF4" FontWeight="Bold" FontSize="12.5"
+                           VerticalAlignment="Center" HorizontalAlignment="Left"
+                           Margin="14,0,38,0"/>
+                <Popup x:Name="Popup" Placement="Bottom"
+                       IsOpen="{TemplateBinding IsDropDownOpen}"
+                       AllowsTransparency="True" Focusable="False"
+                       PopupAnimation="Slide">
+                    <Grid x:Name="DropDown" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}" SnapsToDevicePixels="True">
+                        <Border x:Name="DropDownBorder" Background="#0A182C" BorderBrush="#1C3D68" BorderThickness="1.5" CornerRadius="10" Margin="0,4,0,0">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#000000" BlurRadius="12" ShadowDepth="4" Opacity="0.5"/>
+                            </Border.Effect>
+                            <ScrollViewer Margin="4" SnapsToDevicePixels="True">
+                                <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                            </ScrollViewer>
+                        </Border>
+                    </Grid>
+                </Popup>
+            </Grid>
+        </ControlTemplate>
+
+        <Style x:Key="ModernCitrusComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Template" Value="{StaticResource ModernCitrusComboBoxTemplate}"/>
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="ComboBoxItem">
+                        <Setter Property="Background" Value="#0A182C"/>
+                        <Setter Property="Foreground" Value="#ECEFF4"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="FontSize" Value="12.5"/>
+                        <Setter Property="Padding" Value="12,9"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#16325C"/>
+                                <Setter Property="Foreground" Value="#00E676"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#1B3A6B"/>
+                                <Setter Property="Foreground" Value="#FFD600"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="68"/>
+            <!-- Header -->
+            <RowDefinition Height="*"/>
+            <!-- Content Area -->
+        </Grid.RowDefinitions>
+
+        <!-- ==================== HEADER ==================== -->
+        <Border Grid.Row="0" Background="#0C1B33" BorderBrush="#183256" BorderThickness="0,0,0,1" Height="62">
+            <Border.Effect>
+                <DropShadowEffect Color="#000000" Opacity="0.45" ShadowDepth="3" BlurRadius="12"/>
+            </Border.Effect>
+            <Grid Margin="18,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MinWidth="260"/>
+                    <ColumnDefinition Width="*" MinWidth="340"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Logo & Brand (Clean & Compact) -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Width="38" Height="38" CornerRadius="10" Margin="0,0,10,0">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#FFD600" Offset="0"/>
+                                <GradientStop Color="#00E676" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <TextBlock Text="🌱" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="Mersi" FontSize="20" FontWeight="ExtraBold" Foreground="#ECEFF4"/>
+                            <TextBlock Text="Nova" FontSize="20" FontWeight="ExtraBold" Foreground="#FFD600"/>
+                            <Border Background="#0E2D20" BorderBrush="#1C5E43" BorderThickness="1" CornerRadius="6" Padding="6,2" Margin="7,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="Akıllı Tarım AI" FontSize="9.5" FontWeight="Bold" Foreground="#00E676"/>
+                            </Border>
+                        </StackPanel>
+                        <TextBlock Text="Akıllı Meyve Teşhis, Ziraat &amp; Saha Danışmanı" FontSize="10.5" Foreground="#7E93AA"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Navigation Tabs (Saha Analizi | Sesli Sohbet | Rekolte | SQL | Hava Durumu) -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button x:Name="TabAnalizBtn" Click="TabAnaliz_Click"
+                            Background="#16325C" Foreground="#00E676" FontWeight="Bold" FontSize="12"
+                            Cursor="Hand" Padding="12,6" Margin="2,0" BorderThickness="0">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="16" Padding="{TemplateBinding Padding}">
+                                    <TextBlock Text="🌿  Saha Analizi" Foreground="{TemplateBinding Foreground}"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <Button x:Name="TabVoiceChatBtn" Click="TabVoiceChat_Click"
+                            Background="Transparent" Foreground="#8899AA" FontWeight="SemiBold" FontSize="12"
+                            Cursor="Hand" Padding="12,6" Margin="2,0" BorderThickness="0">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="16" Padding="{TemplateBinding Padding}">
+                                    <TextBlock Text="🎙️  Sesli Asistan" Foreground="{TemplateBinding Foreground}"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <Button x:Name="TabRekolteBtn" Click="TabRekolte_Click"
+                            Background="Transparent" Foreground="#8899AA" FontWeight="SemiBold" FontSize="12"
+                            Cursor="Hand" Padding="12,6" Margin="2,0" BorderThickness="0">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="16" Padding="{TemplateBinding Padding}">
+                                    <TextBlock Text="🌾  Rekolte" Foreground="{TemplateBinding Foreground}"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <Button x:Name="TabSqlBtn" Click="TabSql_Click"
+                            Background="Transparent" Foreground="#8899AA" FontWeight="SemiBold" FontSize="12"
+                            Cursor="Hand" Padding="12,6" Margin="2,0" BorderThickness="0">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="16" Padding="{TemplateBinding Padding}">
+                                    <TextBlock Text="📊  Veritabanı" Foreground="{TemplateBinding Foreground}"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <Button x:Name="TabWeatherBtn" Click="TabWeather_Click"
+                            Background="Transparent" Foreground="#8899AA" FontWeight="SemiBold" FontSize="12"
+                            Cursor="Hand" Padding="12,6" Margin="2,0" BorderThickness="0">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="16" Padding="{TemplateBinding Padding}">
+                                    <TextBlock Text="🌤️  Hava Durumu" Foreground="{TemplateBinding Foreground}"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </StackPanel>
+
+                <!-- Header Right Badges & Controls (Neat, Balanced & Non-overlapping) -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <!-- User & Location Badge -->
+                    <Border Background="#102544" BorderBrush="#1C3D68" BorderThickness="1.2" CornerRadius="14" Padding="10,5" Margin="0,0,8,0">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="👤" FontSize="11" Margin="0,0,4,0"/>
+                            <TextBlock x:Name="HeaderUsernameText" Text="arda" Foreground="#00E676" FontWeight="Bold" FontSize="11" Margin="0,0,6,0"/>
+                            <TextBlock Text="📍" FontSize="11" Margin="0,0,3,0"/>
+                            <TextBlock x:Name="HeaderLocationText" Text="Mersin / Erdemli" Foreground="#FFD600" FontWeight="SemiBold" FontSize="11"
+                                       MaxWidth="130" TextTrimming="CharacterEllipsis" ToolTip="Doğrulanan Parsel Konumu"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Weather Early Warning Alert Bell Button -->
+                    <Button x:Name="AlertBellButton" Click="ToggleAlertBanner_Click"
+                            Background="#0E2442" BorderBrush="#1C4578" BorderThickness="1.2"
+                            Padding="10,5" Margin="0,0,8,0" Cursor="Hand" ToolTip="Uyarılandırma Sistemini Göster / Gizle">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="bbd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
+                                        BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="14" Padding="{TemplateBinding Padding}">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="🔔" FontSize="11" Margin="0,0,5,0"/>
+                                        <TextBlock Text="Uyarı Sistemi" Foreground="#64B5F6" FontSize="11" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="bbd" Property="Background" Value="#173B6B"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <!-- MersiNova Voice Toggle Button -->
+                    <Button x:Name="VoiceToggleButton" Click="VoiceToggle_Click"
+                            Background="#102544" BorderBrush="#1E3E6B" BorderThickness="1.2"
+                            Cursor="Hand" Padding="10,5" Margin="0,0,8,0" ToolTip="MersiNova Sesli Asistanını Aç/Kapat">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="vbd" Background="{TemplateBinding Background}" 
+                                        BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1.2"
+                                        CornerRadius="14" Padding="{TemplateBinding Padding}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="vbd" Property="Background" Value="#17345E"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock x:Name="VoiceIcon" Text="🔊" FontSize="12" Margin="0,0,5,0"/>
+                            <TextBlock x:Name="VoiceStatusText" Text="MersiNova: Açık" FontSize="11" FontWeight="SemiBold" Foreground="#00E676"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- System Status Badge -->
+                    <Border Background="#102544" CornerRadius="14" Padding="9,5" ToolTip="SQLite Veritabanı ve YOLO v8 Yapay Zeka Hazır">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Ellipse Width="7" Height="7" Fill="#00E676" Margin="0,0,5,0">
+                                <Ellipse.Effect>
+                                    <DropShadowEffect Color="#00E676" BlurRadius="5" ShadowDepth="0"/>
+                                </Ellipse.Effect>
+                            </Ellipse>
+                            <TextBlock Text="AI &amp; SQL Aktif" Foreground="#ECEFF4" FontSize="10.5" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ==================== MAIN CONTENT AREA ==================== -->
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/> <!-- Warning System & Weather Bar -->
+                <RowDefinition Height="*"/>    <!-- Main Views Area -->
+            </Grid.RowDefinitions>
+
+            <!-- ==================== TOP WARNING SYSTEM & SAMPLE TEST BAR ==================== -->
+            <StackPanel Grid.Row="0">
+                <!-- UYARILANDIRMA SİSTEMİ BİLGİLENDİRME & ÖRNEK BUTONU -->
+                <Border x:Name="WarningSystemBar" Background="#0B1A30" BorderBrush="#1C3F70" BorderThickness="0,0,0,1"
+                        Padding="18,9" Visibility="Visible">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Sol: Uyarılandırma Sistemi Rozeti -->
+                        <Border Grid.Column="0" Background="#11294D" BorderBrush="#20518E" BorderThickness="1.2" CornerRadius="8" 
+                                Padding="11,5" Margin="0,0,14,0" VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="🛡️" FontSize="13" Margin="0,0,6,0"/>
+                                <TextBlock Text="UYARILANDIRMA SİSTEMİ" Foreground="#64B5F6" FontSize="11.5" FontWeight="Bold"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Orta: Anlık hava değişimi ve bahçeye zarar veren konularda uyarı vereceğini anlatan metin -->
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,14,0">
+                            <TextBlock TextWrapping="Wrap" VerticalAlignment="Center">
+                                <Run Text="Anlık meteorolojik hava değişimleri" Foreground="#00E676" FontWeight="Bold" FontSize="11.5"/>
+                                <Run Text=" (şiddetli rüzgar, fırtına, ani dolu, don olayları) ve " Foreground="#ECEFF4" FontSize="11.5"/>
+                                <Run Text="bahçenize zarar veren kritik konularda" Foreground="#FFD54F" FontWeight="Bold" FontSize="11.5"/>
+                                <Run Text=" sistem sizi önceden uyararak koruyucu zirai tedbir almanızı sağlar." Foreground="#ECEFF4" FontSize="11.5"/>
+                            </TextBlock>
+                        </StackPanel>
+
+                        <!-- Sağ: 'Örnek' Boşluğu / Butonu -->
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button x:Name="SampleAlertButton" Click="ShowSampleWarningToast_Click"
+                                    Background="#102E4E" BorderBrush="#00E676" BorderThickness="1.5"
+                                    Cursor="Hand" Padding="14,6" ToolTip="Örnek uyarı bildirimini test et (10 saniye ekranda kalır)">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="sampleBd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10" Padding="{TemplateBinding Padding}">
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <TextBlock Text="🔔" FontSize="12" Margin="0,0,6,0"/>
+                                                <TextBlock Text="Örnek Uyarı Göster" Foreground="#00E676" FontSize="11.5" FontWeight="Bold"/>
+                                            </StackPanel>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="sampleBd" Property="Background" Value="#00E676"/>
+                                                <Setter Property="Foreground" Value="#0A182F"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Canlı Meteoroloji Banner'ı (Gerektiğinde Açılabilir, Başlangıçta Kapalı) -->
+                <Border x:Name="AlertBannerBar" Background="#140810" BorderBrush="#E74C3C" BorderThickness="0,0,0,1"
+                        Padding="18,7" Visibility="Collapsed">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Alert Pulse Icon -->
+                        <Border Background="#4A1218" CornerRadius="8" Width="30" Height="30" Margin="0,0,12,0" VerticalAlignment="Center">
+                            <TextBlock Text="⚡" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+
+                        <!-- Center Alerts: Two clear badges side by side with clean descriptions -->
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <!-- Dolu Uyarısı Badge -->
+                            <Border x:Name="AlertHailBadgeBorder" Background="#0C253C" BorderBrush="#00E676" BorderThickness="1" CornerRadius="6" Padding="8,3" Margin="0,0,10,0">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock x:Name="AlertHailTitleText" Text="🛡️ DOLU DURUMU" Foreground="#00E676" FontSize="10.5" FontWeight="Bold" Margin="0,0,6,0"/>
+                                    <TextBlock x:Name="AlertHailText" Text="Dolu riski bulunmuyor; hava emniyetli." Foreground="#ECEFF4" FontSize="11" FontWeight="Medium" MaxWidth="280" TextTrimming="CharacterEllipsis"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Yağmur Uyarısı Badge -->
+                            <Border x:Name="AlertRainBadgeBorder" Background="#0C253C" BorderBrush="#38BDF8" BorderThickness="1" CornerRadius="6" Padding="8,3" Margin="0,0,10,0">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock x:Name="AlertRainTitleText" Text="☀️ YAĞIŞ RAPORU" Foreground="#80D8FF" FontSize="10.5" FontWeight="Bold" Margin="0,0,6,0"/>
+                                    <TextBlock x:Name="AlertRainText" Text="Aşırı sağanak beklenmiyor; narenciye için elverişli." Foreground="#B3E5FC" FontSize="11" FontWeight="Medium" MaxWidth="320" TextTrimming="CharacterEllipsis"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Real-time Location Weather Ticker -->
+                            <Border Background="#102544" BorderBrush="#1C3D68" BorderThickness="1" CornerRadius="6" Padding="8,3" VerticalAlignment="Center">
+                                <TextBlock x:Name="LiveWeatherTickerText" Text="📍 Anlık: 23°C • Nem: %61 • Rüzgar: 13 km/s" Foreground="#00E676" FontSize="10.5" FontWeight="SemiBold"/>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- Right Actions: Voice Speak Alert & Dismiss Button -->
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button Click="SpeakWeatherAlert_Click"
+                                    Background="#2A101C" BorderBrush="#FF5252" BorderThickness="1"
+                                    Padding="9,4" Margin="0,0,8,0" Cursor="Hand" ToolTip="Uyarının Detaylarını MersiNova'dan Dinle">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
+                                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="🔊" FontSize="11" Margin="0,0,5,0"/>
+                                                <TextBlock Text="MersiNova'yı Dinle" Foreground="#FF8A80" FontSize="11" FontWeight="Bold"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+
+                            <Button Click="DismissAlert_Click"
+                                    Width="26" Height="26" Background="#260C14" BorderThickness="0" Cursor="Hand" ToolTip="Uyarı Çubuğunu Gizle">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="13">
+                                            <TextBlock Text="✕" Foreground="#FF8A80" FontSize="11" FontWeight="Bold" 
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </StackPanel>
+
+            <!-- ==================== VIEWS CONTAINER (Row 1) ==================== -->
+            <Grid Grid.Row="1">
+
+            <!-- ==================== VIEW 1: SAHA ANALİZİ & CHAT ==================== -->
+            <Grid x:Name="AnalysisView" Visibility="Visible">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/> <!-- 🌤️ 1 HAFTALIK ZİRAİ HAVA DURUMU & GÖRSEL (SAHA ANALİZİ) -->
+                    <RowDefinition Height="*"/>    <!-- Alt Panel: Çift Sütun (Sohbet & Fotoğraf Analizi) -->
+                </Grid.RowDefinitions>
+
+                <!-- ROW 0: 1 HAFTALIK ZİRAİ HAVA DURUMU & BAHÇE GÖRSELİ BANNERI -->
+                <Border Grid.Row="0" Background="#0A1628" BorderBrush="#162D4A" BorderThickness="0,0,0,1.5" Padding="18,10">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Top Title & Controls Bar -->
+                        <Grid Grid.Row="0" Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                <Border Background="#16325C" CornerRadius="8" Padding="7,3" Margin="0,0,10,0">
+                                    <TextBlock Text="🌤️ MGM &amp; METEOROLOJİK RADAR" Foreground="#00E676" FontSize="10.5" FontWeight="ExtraBold"/>
+                                </Border>
+                                <TextBlock Text="Saha Zirai Hava Durumu &amp; 7 Günlük Tarımsal Takvim" Foreground="#ECEFF4" FontSize="12.5" FontWeight="Bold" VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <!-- Location & Model in Center -->
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
+                                <TextBlock Text="📍 Seçili Parsel:" Foreground="#7E93AA" FontSize="11" Margin="0,0,4,0"/>
+                                <TextBlock x:Name="SahaWeatherLocationText" Text="Mersin / Erdemli - Limonlu" Foreground="#FFD600" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Text="• Model: MGM / ECMWF Zirai İndeks" Foreground="#5A718C" FontSize="10.5" Margin="8,0,0,0"/>
+                            </StackPanel>
+
+                            <!-- Switch to Detailed Weather Tab Button & Collapse Toggle -->
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                <Button Click="TabWeather_Click" Background="#102544" BorderBrush="#1C3D68" BorderThickness="1"
+                                        Padding="10,4" Cursor="Hand" Margin="0,0,6,0">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
+                                                    BorderThickness="1" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                                <TextBlock Text="Detaylı Meteoroloji ➔" Foreground="#38BDF8" FontSize="11" FontWeight="SemiBold"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                                <Button x:Name="ToggleSahaWeatherBtn" Click="ToggleSahaWeather_Click"
+                                        Content="▲" Foreground="#8899AA" FontSize="10" FontWeight="Bold"
+                                        Width="26" Height="26" Background="#102544" BorderThickness="0" Cursor="Hand" ToolTip="Hava Durumu Kartlarını Gizle/Göster">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="13">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Main Weather Content: [ Left Visual Orchard Card ] + [ Right 7-Day Forecast Cards ] -->
+                        <Grid Grid.Row="1" x:Name="SahaWeatherContentGrid">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="360"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- ===== LEFT: GÖRSEL (GOOGLE EARTH CANLI UYDU GÖRÜNTÜSÜ VE KESİN PARSEL BİLGİLERİ) ===== -->
+                            <Border Grid.Column="0" Height="170" CornerRadius="12" Margin="0,0,12,0" ClipToBounds="True" BorderBrush="#00E676" BorderThickness="1.2"
+                                    Cursor="Hand" ToolTip="Google Earth Web Üzerinde Canlı Görüntüle" MouseLeftButtonDown="OpenGoogleEarthWeb_Click">
+                                <Grid>
+                                    <!-- Google Earth Satellite Photography of Citrus Parcels -->
+                                    <Image x:Name="SahaWeatherBannerImage" Stretch="UniformToFill" 
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    
+                                    <!-- Glassmorphic Gradient Overlay for Readability -->
+                                    <Border>
+                                        <Border.Background>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                <GradientStop Color="#25000000" Offset="0"/>
+                                                <GradientStop Color="#60081424" Offset="0.45"/>
+                                                <GradientStop Color="#D0050E1A" Offset="0.75"/>
+                                                <GradientStop Color="#F0030912" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Border.Background>
+                                    </Border>
+
+                                    <!-- Content inside Visual Card -->
+                                    <Grid Margin="12,8">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/> <!-- Top Badges -->
+                                            <RowDefinition Height="*"/>    <!-- Center Temp & Icon -->
+                                            <RowDefinition Height="Auto"/> <!-- Exact Definitive Info -->
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Top Badges: Google Earth & Exact Coordinates -->
+                                        <Grid Grid.Row="0">
+                                            <Border HorizontalAlignment="Left" Background="#D908182B" BorderBrush="#00E676" BorderThickness="1" CornerRadius="6" Padding="6,2">
+                                                <TextBlock Text="🛰️ Google Earth Web Uydu Görüntüsü" Foreground="#00E676" FontSize="10" FontWeight="Bold"/>
+                                            </Border>
+                                            <Border HorizontalAlignment="Right" Background="#D90B1E38" CornerRadius="6" Padding="6,2">
+                                                <TextBlock Text="36.6025° K, 34.3142° D" Foreground="#81D4FA" FontSize="9.5" FontWeight="SemiBold"/>
+                                            </Border>
+                                        </Grid>
+
+                                        <!-- Center Temperature & Icon & Location -->
+                                        <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,4,0,2">
+                                            <TextBlock x:Name="SahaHeroWeatherIcon" Text="🌤️" FontSize="28" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                            <StackPanel VerticalAlignment="Center">
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
+                                                    <TextBlock x:Name="SahaHeroTempText" Text="23.5°C" FontSize="22" FontWeight="ExtraBold" Foreground="White" Margin="0,0,6,0"/>
+                                                    <TextBlock x:Name="SahaHeroDescText" Text="Açık &amp; Güneşli" FontSize="11" FontWeight="SemiBold" Foreground="#80D8FF" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                                <TextBlock x:Name="SahaBannerLocationText" Text="📍 Mersin / Erdemli - Limonlu Parseli" Foreground="#FFD600" FontSize="10.5" FontWeight="Bold"/>
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                        <!-- Bottom Accurate & Definitive Information -->
+                                        <StackPanel Grid.Row="2">
+                                            <TextBlock x:Name="SahaHeroParamsText" Text="💧 Nem: %61  •  💨 Rüzgar: 13 km/s  •  🌧️ Yağış: 0.0 mm" Foreground="#ECEFF4" FontSize="10" FontWeight="SemiBold" Margin="0,0,0,2"/>
+                                            <TextBlock Text="🌱 Kırmızı Akdeniz Toprağı (Terra Rossa) • Rakım: 25 m • Dolu &amp; Yağış Yok (Emniyetli)" Foreground="#69F0AE" FontSize="9" FontWeight="Medium"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+
+                            <!-- ===== RIGHT: 1 HAFTALIK GÜN GÜN TAHMİN KARTLARI ===== -->
+                            <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                                <StackPanel x:Name="DailyCardsPanelSaha" Orientation="Horizontal" VerticalAlignment="Center"/>
+                            </ScrollViewer>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <!-- ROW 1: ÇİFT SÜTUN (SOL SOHBET - SAĞ FOTOĞRAF VE YOLO) -->
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="480"/>
+                        <!-- Left: Interactive AI Chatbot -->
+                        <ColumnDefinition Width="*"/>
+                        <!-- Right: Photo Capture & YOLO Analysis -->
+                    </Grid.ColumnDefinitions>
+
+                <!-- ===== LEFT PANEL: AI CONVERSATION ===== -->
+                <Border Grid.Column="0" Background="#091424" BorderBrush="#152B49" BorderThickness="0,0,1,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <!-- Header -->
+                            <RowDefinition Height="*"/>
+                            <!-- Messages List -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Rich Scrollable Quick Chips Bar -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Input Box -->
+                        </Grid.RowDefinitions>
+
+                        <!-- Chat Header -->
+                        <Border Grid.Row="0" Background="#0E1E36" Padding="18,12" BorderBrush="#152B49" BorderThickness="0,0,0,1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Background="#142C4E" CornerRadius="20" Width="38" Height="38" Margin="0,0,12,0">
+                                    <TextBlock Text="🌱" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="MersiNova — Akıllı Yapay Zeka Tarım &amp; Meyve Asistanı" FontSize="13.5" FontWeight="Bold" Foreground="#ECEFF4"/>
+                                    <TextBlock Text="Meyve Hastalıkları Teşhisi, Zirai Reçete ve Sesli Danışmanlık" FontSize="11" Foreground="#7E93AA"/>
+                                </StackPanel>
+
+                                <!-- Direct Voice Q&A Mode Button -->
+                                <Button Grid.Column="2" Click="TabVoiceChat_Click"
+                                        Background="#16382B" BorderBrush="#00E676" BorderThickness="1"
+                                        Padding="10,5" Cursor="Hand" Margin="0,0,4,0">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
+                                                    BorderThickness="1" CornerRadius="12" Padding="{TemplateBinding Padding}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="🎙️" FontSize="12" Margin="0,0,4,0"/>
+                                                    <TextBlock Text="Karşılıklı Konuş" Foreground="#00E676" FontSize="11" FontWeight="Bold"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                            </Grid>
+                        </Border>
+
+                        <!-- Messages ScrollViewer -->
+                        <ScrollViewer Grid.Row="1" x:Name="ChatScrollViewer"
+                                      VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled"
+                                      Padding="16,10">
+                            <StackPanel x:Name="ChatPanel" Margin="0,4"/>
+                        </ScrollViewer>
+
+                        <!-- Typing Indicator -->
+                        <Border x:Name="TypingIndicator" Grid.Row="1" VerticalAlignment="Bottom" 
+                                HorizontalAlignment="Left" Margin="20,0,0,10"
+                                Background="#0E1E36" CornerRadius="16,16,16,4" Padding="14,9"
+                                Visibility="Collapsed">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#000000" Opacity="0.3" ShadowDepth="2" BlurRadius="6"/>
+                            </Border.Effect>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock x:Name="TypingIndicatorText" Text="🔍 Google &amp; Web Veritabanı taranıyor..." Foreground="#00E676" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Ellipse x:Name="Dot1" Style="{StaticResource DotStyle}"/>
+                                    <Ellipse x:Name="Dot2" Style="{StaticResource DotStyle}"/>
+                                    <Ellipse x:Name="Dot3" Style="{StaticResource DotStyle}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- FRUIT SELECTOR & EXPANDED HORIZONTAL SCROLLABLE EXAMPLE QUESTIONS BAR -->
+                        <Border Grid.Row="2" Background="#0A182C" Padding="12,8" BorderBrush="#152B49" BorderThickness="0,1,0,0">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/> <!-- Fruit Selection Bar (Limon / Portakal) -->
+                                    <RowDefinition Height="Auto"/> <!-- Horizontal Scrollable Questions for Selected Fruit -->
+                                </Grid.RowDefinitions>
+
+                                <!-- ROW 0: Meyve Seçimi (Limon / Portakal) - Tamamen Ayrılmış & Ferah Tasarım -->
+                                <Grid Grid.Row="0" Margin="0,2,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Sol Taraf: Meyve Seçiniz & Seçim Butonları -->
+                                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Border Background="#102544" BorderBrush="#1C3D68" BorderThickness="1.2" CornerRadius="8" Padding="8,4" Margin="0,0,8,0">
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <TextBlock Text="🌱" FontSize="11" Margin="0,0,4,0"/>
+                                                <TextBlock Text="Meyve Seçiniz:" Foreground="#8FA3BF" FontSize="11" FontWeight="Bold"/>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <!-- Limon Seç Butonu -->
+                                        <Button x:Name="ChatSelectLimonBtn" Click="ChatSelectFruit_Click" Tag="limon"
+                                                Background="#2E2408" BorderBrush="#FFD600" BorderThickness="1.5"
+                                                Padding="11,4" Margin="0,0,6,0" Cursor="Hand" ToolTip="Limon hastalıkları ve reçetelerini listele">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border x:Name="lbd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
+                                                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <TextBlock Text="🍋" FontSize="11.5" Margin="0,0,4,0"/>
+                                                <TextBlock x:Name="ChatLimonBtnText" Text="Limon" Foreground="#FFD600" FontSize="11" FontWeight="Bold"/>
+                                            </StackPanel>
+                                        </Button>
+
+                                        <!-- Portakal Seç Butonu -->
+                                        <Button x:Name="ChatSelectPortakalBtn" Click="ChatSelectFruit_Click" Tag="portakal"
+                                                Background="#102544" BorderBrush="#1C3D68" BorderThickness="1.2"
+                                                Padding="11,4" Cursor="Hand" ToolTip="Portakal hastalıkları ve reçetelerini listele">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border x:Name="pbd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
+                                                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <TextBlock Text="🍊" FontSize="11.5" Margin="0,0,4,0"/>
+                                                <TextBlock x:Name="ChatPortakalBtnText" Text="Portakal" Foreground="#8899AA" FontSize="11" FontWeight="SemiBold"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+
+                                    <!-- Sağ Taraf: Aktif Reçete Rozeti (Taşma Korumalı & Sağa Hizalı) -->
+                                    <Border Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                            Background="#0D223C" BorderBrush="#1B3F6C" BorderThickness="1" CornerRadius="8" Padding="8,4" Margin="6,0,0,0">
+                                        <TextBlock x:Name="ChatActiveFruitSubtitle" Text="🍋 Limon Reçeteleri" 
+                                                   Foreground="#FFD600" FontSize="10.5" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                    </Border>
+                                </Grid>
+
+                                <!-- ROW 1: Scrollable Chips Bar for Selected Fruit -->
+                                <Grid Grid.Row="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <!-- Left Scroll Btn -->
+                                        <ColumnDefinition Width="*"/>
+                                        <!-- Scrollable Chips -->
+                                        <ColumnDefinition Width="Auto"/>
+                                        <!-- Right Scroll Btn -->
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Left Scroll Button -->
+                                    <Button Grid.Column="0" Click="ScrollChipsLeft_Click"
+                                            Width="24" Height="30" Background="#132742" BorderThickness="0"
+                                            Foreground="#00E676" FontWeight="Bold" FontSize="12" Cursor="Hand" Margin="0,0,4,0">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                    <TextBlock Text="◀" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
+
+                                    <!-- ScrollViewer with questions -->
+                                    <ScrollViewer Grid.Column="1" x:Name="ChipsScrollViewer"
+                                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                                        <Grid>
+                                            <!-- 1. LİMON ÖZEL HASTALIKLARI VE İLAÇ SORULARI -->
+                                            <StackPanel x:Name="LimonChipsPanel" Orientation="Horizontal" Visibility="Visible">
+                                                <Button Style="{StaticResource QuickChipStyle}" Content="🍋 Uçkurutan İlaç Markaları &amp; Budama?" Click="Chip_Click" 
+                                                        Tag="Limonda uçkurutan (Phoma tracheiphila) hastalığı var. Hangi ticari ilaç markaları, hangi dozda ve nasıl kullanılmalı? Budama ve macun kuralları nedir?"/>
+                                                <Button Style="{StaticResource QuickChipStyle}" Content="🍋 Limon Çiçek Güvesi (Prays citri) İlacı?" Click="Chip_Click" 
+                                                        Tag="Limon çiçek güvesi için hangi ruhsatlı ilaç markaları, kaç gram dozajla ve ne zaman püskürtülmeli?"/>
+                                                <Button Style="{StaticResource QuickChipStyle}" Content="🕷️ Limon Pas Böcüsü (Gümüşi Leke) &amp; Kırmızı Örümcek?" Click="Chip_Click" 
+                                                        Tag="Limonda pas böcüsü gümüşi lekesi ve kırmızı örümcek için hangi ilaç markaları, dozajı ve bekleme süresi önerilir?"/>
+                                                <Button Style="{StaticResource QuickChipStyle}" Content="🟡 Limonda Demir Klorozu &amp; Şelat Dozu?" Click="Chip_Click" 
+                                                        Tag="Limon yapraklarında sararma var. Hangi marka EDDHA şelatlı demir, ağaç başı kaç gram ve topraktan nasıl verilmeli?"/>
+                                                <Button Style="{StaticResource QuickChipStyle}" Content="🌳 Limon Gövde Zamklanması &amp; Aliette?" Click="Chip_Click" 
+                                                        Tag="Limon ağacı gövdesinde zamk akıntısı ve kabuk çatlağı var. Hangi fungisit markası, dozajı ve yara temizliği nasıl olmalı?"/>
+                                                <Button Style="{StaticResource QuickChipStyle}" Content="🍋 Limon Antraknoz &amp; Bakır Takvimi?" Click="Chip_Click" 
+                                                        Tag="Limonda yaprak ve sürgün antraknozu için hangi bakır markaları, bordo bulamacı dozu ve uygulama kuralları nedir?"/>
+                                                <Button Style="{StaticResource QuickChipStyle}" Content="💔 Limon Kabuk Çatlaması &amp; Kalsiyum?" Click="Chip_Click" 
+                                                        Tag="Limonda meyve kabuk çatlamasını önlemek için hangi kalsiyum ve sulama programı uygulanmalı?"/>
+                                                <Button Style="{StaticResource QuickChipStyle}" Content="🌾 300 Limon Ağacı Rekoltesi &amp; Cirosu?" Click="Chip_Click" 
+                                                        Tag="300 limon ağacım var, ağaç başı 650 meyve var, kaç ton çıkar ve ne kazanırım?"/>
+                                                <Button Style="{StaticResource QuickChipStyle}" Content="💧 Limon Damla Sulama &amp; Gübreleme?" Click="Chip_Click" 
+                                                        Tag="Limon ağaçları damla sulama ile kaç günde bir sulanmalı ve hangi gübreler verilmeli?"/>
+                                            </StackPanel>
+
+                                            <!-- 2. PORTAKAL ÖZEL HASTALIKLARI VE İLAÇ SORULARI -->
+                                            <StackPanel x:Name="PortakalChipsPanel" Orientation="Horizontal" Visibility="Collapsed">
+                                                <Button Style="{StaticResource QuickChipStyle}" Content="🍊 Akdeniz Meyve Sineği Tuzak &amp; İlaç Markaları?" Click="Chip_Click" 
+                                                        Tag="Portakalda Akdeniz meyve sineği için hangi ticari ilaç markaları, zehirli yem kısmi dal ilaçlaması dozu ve tuzaklar nasıl uygulanmalı?"/>
+                                                <Button Style="{StaticResource QuickChipStyle}" Content="🐛 Portakalda Unlu Bit &amp; Karaballık (Fumajin)?" Click="Chip_Click" 
+                                                        Tag="Portakalda unlu bit ve karaballık mantarı için hangi ilaç markaları, yazlık beyaz yağ dozu ve uygulama şekli nedir?"/>
+                                                <Button Style="{StaticResource QuickChipStyle}" Content="🌳 Portakal Gövde Zamklanması (Phytophthora) İlaçları?" Click="Chip_Click" 
+                                                        Tag="Portakal ağacında gövde zamklanması ve kök çürüklüğü için Aliette ve Ridomil markaları nasıl ve hangi dozda kullanılır?"/>
+                                                <Button Style="{StaticResource QuickChipStyle}" Content="🍊 Kırmızı Kabuklu Bit &amp; Yazlık Yağ Dozu?" Click="Chip_Click" 
+                                                        Tag="Portakalda kırmızı kabuklu bit (Aonidiella aurantii) için hangi ilaç markaları ve yazlık yağ nasıl atılmalı?"/>
+                                                <Button Style="{StaticResource QuickChipStyle}" Content="🍂 Portakal Meyve Dökümü &amp; Çinko/Magnezyum?" Click="Chip_Click" 
+                                                        Tag="Portakalda haziran meyve dökümü neden olur? Çinko ve magnezyum eksikliği için hangi yaprak gübresi markaları verilmeli?"/>
+                                                <Button Style="{StaticResource QuickChipStyle}" Content="🍊 Portakal Kabuk Kalınlaşması &amp; Koflaşma?" Click="Chip_Click" 
+                                                        Tag="Portakal meyvesinde kabuk kalınlaşması ve koflaşma nasıl önlenir? Potasyum ve fosfor dengesi nasıl kurulmalı?"/>
+                                                <Button Style="{StaticResource QuickChipStyle}" Content="🧪 Portakal Gübreleme &amp; Potasyum Takvimi?" Click="Chip_Click" 
+                                                        Tag="Portakal bahçesi için yıllık gübreleme takvimi, azot, fosfor ve potasyum oranları nasıl olmalı?"/>
+                                                <Button Style="{StaticResource QuickChipStyle}" Content="🌾 500 Portakal Ağacı Verimi &amp; Geliri?" Click="Chip_Click" 
+                                                        Tag="500 portakal ağacım var, ağaç başı 400 meyve var, rekolte ve gelir ne olur?"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </ScrollViewer>
+
+                                    <!-- Right Scroll Button -->
+                                    <Button Grid.Column="2" Click="ScrollChipsRight_Click"
+                                            Width="24" Height="30" Background="#132742" BorderThickness="0"
+                                            Foreground="#00E676" FontWeight="Bold" FontSize="12" Cursor="Hand" Margin="4,0,0,0">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                    <TextBlock Text="▶" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Border>
+
+                        <!-- Chat Input Box + Mic Button -->
+                        <Border Grid.Row="3" Background="#0C1B33" BorderBrush="#152B49" BorderThickness="0,1,0,0" Padding="16,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Voice Ask / Mic Button -->
+                                <Button Grid.Column="0" x:Name="VoiceAskButton" Click="VoiceAsk_Click"
+                                        Width="40" Height="40" Margin="0,0,8,0" Cursor="Hand"
+                                        ToolTip="Sesli Soru Sor / Karşılıklı Konuş">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="micBd" Background="#16325C" CornerRadius="20">
+                                                <TextBlock Text="🎙️" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="micBd" Property="Background" Value="#00E676"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+
+                                <!-- Text Input -->
+                                <Border Grid.Column="1" Background="#07101C" BorderBrush="#183359" 
+                                        BorderThickness="1.5" CornerRadius="20" Padding="14,8,14,8" Margin="0,0,10,0">
+                                    <TextBox x:Name="UserInputBox"
+                                             Style="{StaticResource ModernTextBoxStyle}"
+                                             Background="Transparent"
+                                             BorderThickness="0"
+                                             Padding="0"
+                                             TextWrapping="Wrap"
+                                             AcceptsReturn="False"
+                                             VerticalAlignment="Center"
+                                             MaxHeight="90"
+                                             VerticalScrollBarVisibility="Auto"
+                                             KeyDown="UserInputBox_KeyDown"
+                                             GotFocus="UserInputBox_GotFocus"
+                                             LostFocus="UserInputBox_LostFocus"
+                                             Tag="Nova ile konuşun, soru sorun veya ağaç sayısı yazın..."/>
+                                </Border>
+
+                                <!-- Send Button -->
+                                <Button Grid.Column="2" x:Name="SendButton"
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Width="40" Height="40"
+                                        Padding="0"
+                                        Click="SendButton_Click">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="border" CornerRadius="20" Width="40" Height="40">
+                                                <Border.Background>
+                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                        <GradientStop Color="#00E676" Offset="0"/>
+                                                        <GradientStop Color="#00897B" Offset="1"/>
+                                                    </LinearGradientBrush>
+                                                </Border.Background>
+                                                <TextBlock Text="➤" Foreground="White" FontSize="16" 
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Margin="2,0,0,0"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="border" Property="Opacity" Value="0.85"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- ===== RIGHT PANEL: PHOTO CAPTURE & YOLO ANALYSIS ===== -->
+                <Border Grid.Column="1" Background="#081220">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="28,20,28,30">
+
+                            <!-- Section Title & Quick Crop Samples -->
+                            <Grid Margin="0,0,0,16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="📸 Narenciye Görseli İnceleme &amp; YOLO v8 Analizi" FontSize="18" FontWeight="Bold" Foreground="#ECEFF4"/>
+                                    <TextBlock Text="Limon veya portakal fotoğrafını anlık çekin veya yükleyin (Hastalık &amp; Olgunluk)" FontSize="12" Foreground="#7E93AA" Margin="0,2,0,0"/>
+                                </StackPanel>
+
+                                <!-- Quick Preset Samples (Limon & Portakal) -->
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="Hızlı Örnekler:" Foreground="#5A718C" FontSize="11" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <Button Click="SampleCrop_Click" Tag="limon"
+                                            Background="#132742" Foreground="#FFD600" FontSize="11.5" FontWeight="SemiBold" Padding="12,6" Margin="0,0,8,0" Cursor="Hand">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}" BorderBrush="#3D3B10" BorderThickness="1" CornerRadius="10" Padding="{TemplateBinding Padding}">
+                                                    <TextBlock Text="🍋 Limon Bahçesi" Foreground="{TemplateBinding Foreground}"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
+                                    <Button Click="SampleCrop_Click" Tag="portakal"
+                                            Background="#132742" Foreground="#FF9100" FontSize="11.5" FontWeight="SemiBold" Padding="12,6" Cursor="Hand">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}" BorderBrush="#3D2910" BorderThickness="1" CornerRadius="10" Padding="{TemplateBinding Padding}">
+                                                    <TextBlock Text="🍊 Portakal Bahçesi" Foreground="{TemplateBinding Foreground}"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Action Buttons: Fotoğraf Çek & Fotoğraf Yükle -->
+                            <Grid Margin="0,0,0,16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="12"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="12"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Take Photo (Kamera) -->
+                                <Button Grid.Column="0" x:Name="TakePhotoButton"
+                                        Click="TakePhoto_Click" Height="48" Cursor="Hand">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="tbd" CornerRadius="12">
+                                                <Border.Background>
+                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                        <GradientStop Color="#00E676" Offset="0"/>
+                                                        <GradientStop Color="#00B0FF" Offset="1"/>
+                                                    </LinearGradientBrush>
+                                                </Border.Background>
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <TextBlock Text="📸" FontSize="16" Margin="0,0,8,0"/>
+                                                    <TextBlock Text="Anlık Fotoğraf Çek (Kamera)" FontSize="13" FontWeight="Bold" Foreground="#04121E"/>
+                                                </StackPanel>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="tbd" Property="Opacity" Value="0.9"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+
+                                <!-- Upload Photo (Dosya Seç) -->
+                                <Button Grid.Column="2" x:Name="UploadButton"
+                                        Click="UploadButton_Click" Height="48" Cursor="Hand">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="ubd" Background="#102544" BorderBrush="#1E3E6B" BorderThickness="1.5" CornerRadius="12">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <TextBlock Text="📁" FontSize="16" Margin="0,0,8,0"/>
+                                                    <TextBlock Text="Fotoğraf Yükle (Dosya Seç)" FontSize="13" FontWeight="Bold" Foreground="#ECEFF4"/>
+                                                </StackPanel>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="ubd" Property="BorderBrush" Value="#00E676"/>
+                                                    <Setter TargetName="ubd" Property="Background" Value="#17345E"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+
+                                <!-- Analyze Button -->
+                                <Button Grid.Column="4" x:Name="AnalyzeButton"
+                                        Click="AnalyzeButton_Click" Height="48" Width="150"
+                                        IsEnabled="False" Cursor="Hand">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="abd" Background="#00E676" CornerRadius="12">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter TargetName="abd" Property="Background" Value="#172F4D"/>
+                                                    <Setter TargetName="abd" Property="Opacity" Value="0.6"/>
+                                                </Trigger>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="abd" Property="Opacity" Value="0.88"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="⚡" FontSize="16" Margin="0,0,6,0"/>
+                                        <TextBlock x:Name="AnalyzeBtnText" Text="Analiz Et" FontSize="13" FontWeight="Bold" Foreground="#04121E"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+
+                            <!-- Viewport: Image Preview + YOLO Bounding Box Overlay -->
+                            <Border x:Name="DropZone" Background="#0A182C" BorderBrush="#183359"
+                                    BorderThickness="2" CornerRadius="16" Height="320"
+                                    Cursor="Hand" MouseLeftButtonDown="DropZone_Click"
+                                    AllowDrop="True" Drop="DropZone_Drop" DragOver="DropZone_DragOver"
+                                    ClipToBounds="True">
+                                <Grid>
+                                    <!-- Placeholder -->
+                                    <StackPanel x:Name="DropPlaceholder" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Border Background="#102544" Width="72" Height="72" CornerRadius="36" Margin="0,0,0,14" HorizontalAlignment="Center">
+                                            <TextBlock Text="🌾" FontSize="36" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock Text="Fotoğraf Çekmek veya Yüklemek İçin Tıklayın" FontSize="15" FontWeight="SemiBold"
+                                                   Foreground="#ECEFF4" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="veya meyve/sebze fotoğrafını buraya sürükleyip bırakın" FontSize="12"
+                                                   Foreground="#6B829E" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                        <TextBlock Text="YOLOv8 nesne tespiti otomatik olarak devreye girecektir" FontSize="11"
+                                                   Foreground="#00E676" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                                    </StackPanel>
+
+                                    <!-- Image Preview -->
+                                    <Image x:Name="PreviewImage" Stretch="Uniform" Visibility="Collapsed"
+                                           RenderOptions.BitmapScalingMode="HighQuality"/>
+
+                                    <!-- YOLO Detection Overlay -->
+                                    <Canvas x:Name="YoloOverlayCanvas" Visibility="Collapsed">
+                                        <Border x:Name="YoloBoundingBox"
+                                                BorderBrush="#00E676" BorderThickness="2.5"
+                                                Background="#1A00E676" CornerRadius="4">
+                                            <Border.Effect>
+                                                <DropShadowEffect Color="#00E676" BlurRadius="12" ShadowDepth="0" Opacity="0.8"/>
+                                            </Border.Effect>
+                                            <Grid>
+                                                <Border Background="#00E676" CornerRadius="3,0,6,0" 
+                                                        HorizontalAlignment="Left" VerticalAlignment="Top" Padding="8,4">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="🎯 " FontSize="10"/>
+                                                        <TextBlock x:Name="YoloTagText" Text="YOLOv8: Domates %96.8" 
+                                                                   Foreground="#04121E" FontSize="11" FontWeight="Bold"/>
+                                                    </StackPanel>
+                                                </Border>
+
+                                                <Border Background="#D00A182C" CornerRadius="6" 
+                                                        HorizontalAlignment="Right" VerticalAlignment="Bottom" 
+                                                        Margin="0,0,8,8" Padding="8,4">
+                                                    <TextBlock x:Name="YoloMaturityTag" Text="Olgunluk: %85" 
+                                                               Foreground="#00E676" FontSize="11" FontWeight="Bold"/>
+                                                </Border>
+                                            </Grid>
+                                        </Border>
+                                    </Canvas>
+
+                                    <!-- Shutter Flash -->
+                                    <Border x:Name="ShutterFlash" Background="White" Opacity="0" IsHitTestVisible="False"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- ==================== DETAILED ANALYSIS DASHBOARD ==================== -->
+                            <Border x:Name="ResultCard" Background="#0C1B33" CornerRadius="18"
+                                    BorderBrush="#183359" BorderThickness="1.5"
+                                    Margin="0,20,0,0" Padding="20"
+                                    Visibility="Collapsed">
+                                <StackPanel>
+                                    <!-- Result Header -->
+                                    <Grid Margin="0,0,0,16">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <TextBlock x:Name="PlantTitleText" Text="🌿 Domates (Solanum lycopersicum)" 
+                                                       FontSize="18" FontWeight="Bold" Foreground="#ECEFF4"/>
+                                            <TextBlock Text="YOLOv8 Derin Öğrenme Taraması ve Zirai Karar Destek Raporu" 
+                                                       FontSize="11" Foreground="#7E93AA" Margin="0,2,0,0"/>
+                                        </StackPanel>
+
+                                        <!-- Fast Jump Buttons -->
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                            <Button Click="JumpToYieldCalc_Click"
+                                                    Background="#132F52" BorderBrush="#00E676" BorderThickness="1"
+                                                    Padding="12,6" Margin="0,0,8,0" Cursor="Hand">
+                                                <Button.Template>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
+                                                                BorderThickness="1" CornerRadius="12" Padding="{TemplateBinding Padding}">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="🌾" FontSize="13" Margin="0,0,6,0"/>
+                                                                <TextBlock Text="Rekolte Hesapla" Foreground="#00E676" FontSize="11" FontWeight="SemiBold"/>
+                                                            </StackPanel>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                            </Button>
+
+                                            <!-- Re-listen Button -->
+                                            <Button Click="ReplaySpeech_Click"
+                                                    Background="#102544" BorderBrush="#1E3E6B" BorderThickness="1"
+                                                    Padding="12,6" Cursor="Hand">
+                                                <Button.Template>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
+                                                                BorderThickness="1" CornerRadius="12" Padding="{TemplateBinding Padding}">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="🔊" FontSize="13" Margin="0,0,6,0"/>
+                                                                <TextBlock Text="Tavsiyeyi Seslendir" Foreground="#00E676" FontSize="11" FontWeight="SemiBold"/>
+                                                            </StackPanel>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <!-- KPI 1: OLGUNLUK DURUMU -->
+                                    <Border Background="#102544" CornerRadius="14" Padding="16" Margin="0,0,0,12" BorderBrush="#1A3B66" BorderThickness="1">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel Grid.Row="0" Grid.Column="0">
+                                                <TextBlock Text="🍃 OLGUNLUK DURUMU" Foreground="#7E93AA" FontSize="11" FontWeight="SemiBold"/>
+                                                <TextBlock x:Name="RipenessText" Text="Hasada Hazır — Yüksek Kalite" 
+                                                           Foreground="#00E676" FontSize="16" FontWeight="Bold" Margin="0,4,0,0"/>
+                                            </StackPanel>
+
+                                            <Border Grid.Row="0" Grid.Column="1" x:Name="RipenessBadge" 
+                                                    Background="#16382B" CornerRadius="10" Padding="12,6" VerticalAlignment="Center">
+                                                <TextBlock x:Name="RipenessScore" Text="%85" Foreground="#00E676" FontSize="16" FontWeight="ExtraBold"/>
+                                            </Border>
+
+                                            <!-- Ripeness Progress Bar -->
+                                            <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="0,10,0,0">
+                                                <Border Height="8" Background="#0A182C" CornerRadius="4"/>
+                                                <Border x:Name="RipenessProgressBar" Height="8" Background="#00E676" CornerRadius="4" HorizontalAlignment="Left" Width="200"/>
+                                            </Grid>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- KPI 2: SULAMA & KPI 3: İLAÇ / GÜBRE -->
+                                    <Grid Margin="0,0,0,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="12"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Sulama -->
+                                        <Border Grid.Column="0" Background="#102544" CornerRadius="14" Padding="16" BorderBrush="#1A3B66" BorderThickness="1">
+                                            <StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                                    <Border Background="#13335A" CornerRadius="8" Width="30" Height="30" Margin="0,0,10,0">
+                                                        <TextBlock Text="💧" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <StackPanel VerticalAlignment="Center">
+                                                        <TextBlock Text="SULAMA TAKVİMİ" Foreground="#7E93AA" FontSize="10" FontWeight="Bold"/>
+                                                        <TextBlock x:Name="WaterDaysKpi" Text="2 Gün Sonra" Foreground="#3498DB" FontSize="16" FontWeight="Bold"/>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                                <TextBlock x:Name="WaterText" 
+                                                           Text="2 gün sonra sabah erken saatte damla sulama ile 40 dk su veriniz." 
+                                                           Foreground="#B2C7DF" FontSize="12" TextWrapping="Wrap" LineHeight="18"/>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <!-- İlaç / Gübre -->
+                                        <Border Grid.Column="2" Background="#102544" CornerRadius="14" Padding="16" BorderBrush="#1A3B66" BorderThickness="1">
+                                            <StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                                    <Border Background="#3B2E15" CornerRadius="8" Width="30" Height="30" Margin="0,0,10,0">
+                                                        <TextBlock Text="🧪" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <StackPanel VerticalAlignment="Center">
+                                                        <TextBlock Text="İLAÇ &amp; GÜBRELEME" Foreground="#7E93AA" FontSize="10" FontWeight="Bold"/>
+                                                        <TextBlock x:Name="PesticideDaysKpi" Text="4 Gün Sonra" Foreground="#F39C12" FontSize="16" FontWeight="Bold"/>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                                <TextBlock x:Name="PesticideText" 
+                                                           Text="4 gün sonra potasyumlu yaprak gübresi uygulayınız. 6 gün sonra mildiyö koruyucu ilaçlama uygundur." 
+                                                           Foreground="#B2C7DF" FontSize="12" TextWrapping="Wrap" LineHeight="18"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+
+                                    <!-- KPI 4: HASAT ÖNGÖRÜSÜ -->
+                                    <Border Background="#102544" CornerRadius="14" Padding="16" BorderBrush="#1A3B66" BorderThickness="1" Margin="0,0,0,12">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Background="#3A1C24" CornerRadius="10" Width="38" Height="38" Margin="0,0,14,0">
+                                                <TextBlock Text="🌾" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="HASAT ZAMANI ÖNGÖRÜSÜ" Foreground="#7E93AA" FontSize="10" FontWeight="Bold"/>
+                                                <TextBlock x:Name="HarvestText" Text="Yaklaşık 3 gün sonra hasat için en uygun lezzet ve sertliğe ulaşacaktır." 
+                                                           Foreground="#E67E22" FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,3,0,0"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- KPI 5: NARENCİYE HASTALIK TEŞHİSİ & TEDAVİ REÇETESİ -->
+                                    <Border Background="#102544" CornerRadius="14" Padding="16" BorderBrush="#2D4D3A" BorderThickness="1.2">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Background="#1A382A" CornerRadius="10" Width="38" Height="38" Margin="0,0,14,0" VerticalAlignment="Top">
+                                                <TextBlock Text="🔬" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <StackPanel Grid.Column="1">
+                                                <TextBlock Text="NARENCİYE HASTALIK TEŞHİSİ &amp; TEDAVİ REÇETESİ" Foreground="#00E676" FontSize="10" FontWeight="Bold"/>
+                                                <TextBlock x:Name="DiseaseTitleText" Text="Hastalık Tespit Edilmedi (Sağlıklı)" 
+                                                           Foreground="#ECEFF4" FontSize="14" FontWeight="Bold" Margin="0,3,0,4"/>
+                                                <TextBlock x:Name="DiseasePrescriptionText" 
+                                                           Text="Rutin koruyucu kışlık/yazlık yağ ve bakır uygulamasına devam ediniz." 
+                                                           Foreground="#B2C7DF" FontSize="12" TextWrapping="Wrap" LineHeight="18"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+
+                                </StackPanel>
+                            </Border>
+
+                            <!-- RECENT ANALYSES LIST -->
+                            <Border Background="#0C1B33" CornerRadius="16" BorderBrush="#183359" BorderThickness="1.5" Margin="0,20,0,0" Padding="18">
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,12">
+                                        <TextBlock Text="📋 Son Saha Analiz Kayıtları (SQL)" FontSize="13" FontWeight="Bold" Foreground="#ECEFF4"/>
+                                        <Button HorizontalAlignment="Right" Content="Tümünü SQL'de Gör →" 
+                                                Background="Transparent" BorderThickness="0" Foreground="#00E676" FontSize="11" FontWeight="SemiBold"
+                                                Cursor="Hand" Click="TabSql_Click"/>
+                                    </Grid>
+                                    <ItemsControl x:Name="RecentList">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Background="#102544" CornerRadius="8" Padding="12,10" Margin="0,0,0,6">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="{Binding Label}" Foreground="#ECEFF4" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                                        <Border Grid.Column="1" Background="#16382B" CornerRadius="6" Padding="6,2" Margin="10,0">
+                                                            <TextBlock Text="{Binding Date}" Foreground="#00E676" FontSize="10" FontWeight="SemiBold"/>
+                                                        </Border>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <TextBlock x:Name="NoHistoryText" Text="Henüz analiz yapılmadı. Fotoğraf çekin veya yükleyin." 
+                                               Foreground="#5A718C" FontSize="11" HorizontalAlignment="Center" Margin="0,6,0,0"/>
+                                </StackPanel>
+                            </Border>
+
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <!-- ==================== VIEW 2: DEDICATED LIVE VOICE & Q&A AREA ==================== -->
+            <Grid x:Name="VoiceChatView" Visibility="Collapsed" Background="#081220">
+                <Grid Margin="36,24">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <!-- Voice Header -->
+                        <RowDefinition Height="*"/>
+                        <!-- Interactive Dialogue & AI Orb -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- Live Dialogue Input -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Top Bar -->
+                    <Grid Grid.Row="0" Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="🎙️ MersiNova ile Karşılıklı Canlı Konuşma Alanı" FontSize="20" FontWeight="Bold" Foreground="#ECEFF4"/>
+                            <TextBlock Text="Yapay zeka asistanınız MersiNova ile dilediğiniz gibi soru-cevap yapabilir, akıcı ve doğal ses tonuyla sohbet edebilirsiniz." 
+                                       FontSize="12" Foreground="#7E93AA" Margin="0,4,0,0"/>
+                        </StackPanel>
+
+                        <Button Grid.Column="1" Click="BackToAnaliz_Click"
+                                Background="#102544" BorderBrush="#1E3E6B" BorderThickness="1.5"
+                                Foreground="#ECEFF4" FontWeight="Bold" FontSize="12" Padding="16,8" Cursor="Hand">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
+                                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="12" Padding="{TemplateBinding Padding}">
+                                        <TextBlock Text="← Saha Analizine Dön"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </Grid>
+
+                    <!-- Center: Interactive AI Voice Orb & Dialogue Stream -->
+                    <Grid Grid.Row="1" Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="380"/>
+                            <!-- Orb & Quick Voice Starters -->
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                            <!-- Dialogue Transcript Stream -->
+                        </Grid.ColumnDefinitions>
+
+                        <!-- LEFT: Pulsating AI Orb & Voice Starter Buttons -->
+                        <Border Grid.Column="0" Background="#0C1B33" CornerRadius="18" BorderBrush="#183359" BorderThickness="1.5" Padding="20">
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <!-- Glowing Voice Orb -->
+                                <Border x:Name="VoiceOrbBorder" Width="130" Height="130" CornerRadius="65" Margin="0,0,0,16" HorizontalAlignment="Center">
+                                    <Border.Background>
+                                        <RadialGradientBrush>
+                                            <GradientStop Color="#00E676" Offset="0"/>
+                                            <GradientStop Color="#00897B" Offset="0.7"/>
+                                            <GradientStop Color="#0C1B33" Offset="1"/>
+                                        </RadialGradientBrush>
+                                    </Border.Background>
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#00E676" BlurRadius="25" ShadowDepth="0" Opacity="0.8"/>
+                                    </Border.Effect>
+                                    <TextBlock x:Name="VoiceOrbIcon" Text="🎙️" FontSize="44" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+
+                                <TextBlock x:Name="LiveVoiceStatusText" Text="MersiNova Dinlemeye Hazır" 
+                                           FontSize="14" FontWeight="Bold" Foreground="#00E676" HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="LiveVoiceSubText" Text="MersiNova Akıcı Türkçe Yapay Zeka Sohbeti (ElevenLabs Doğal Tonlama)" FontSize="11" Foreground="#7E93AA" HorizontalAlignment="Center" Margin="0,2,0,12"/>
+
+                                <!-- Animated Sound Waves -->
+                                <StackPanel x:Name="SoundWaveBars" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,12" Visibility="Collapsed">
+                                    <Rectangle x:Name="Wave1" Width="4" Height="16" Fill="#00E676" RadiusX="2" RadiusY="2" Margin="3,0"/>
+                                    <Rectangle x:Name="Wave2" Width="4" Height="28" Fill="#00E676" RadiusX="2" RadiusY="2" Margin="3,0"/>
+                                    <Rectangle x:Name="Wave3" Width="4" Height="38" Fill="#00E676" RadiusX="2" RadiusY="2" Margin="3,0"/>
+                                    <Rectangle x:Name="Wave4" Width="4" Height="24" Fill="#00E676" RadiusX="2" RadiusY="2" Margin="3,0"/>
+                                    <Rectangle x:Name="Wave5" Width="4" Height="14" Fill="#00E676" RadiusX="2" RadiusY="2" Margin="3,0"/>
+                                </StackPanel>
+
+                                <!-- Interactive Two-Way Listening Button: "Beni Dinle" -->
+                                <Button x:Name="ToggleListenButton" Click="ToggleListen_Click" Width="280" Height="48" Cursor="Hand" Margin="0,0,0,8">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="lbd" CornerRadius="14">
+                                                <Border.Background>
+                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                        <GradientStop Color="#00E676" Offset="0"/>
+                                                        <GradientStop Color="#00B0FF" Offset="1"/>
+                                                    </LinearGradientBrush>
+                                                </Border.Background>
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock x:Name="ListenBtnIcon" Text="🎙️" FontSize="18" Margin="0,0,8,0"/>
+                                        <TextBlock x:Name="ListenBtnText" Text="BENİ DİNLE (Konuşmaya Başla)" FontWeight="Bold" Foreground="#04121E" FontSize="13"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <!-- Finish Speaking / Quick Answer Button -->
+                                <Button x:Name="FinishSpeakingBtn" Click="FinishSpeaking_Click"
+                                        Width="280" Height="36" Background="#142C4E" BorderBrush="#00E676" BorderThickness="1"
+                                        Cursor="Hand" Margin="0,0,0,14" Visibility="Collapsed">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <TextBlock Text="✅ " FontSize="12"/>
+                                                    <TextBlock Text="Sözüm Bitti, Nova Yanıtlasın" Foreground="#00E676" FontSize="11.5" FontWeight="Bold"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+
+                                <TextBlock Text="Hızlı Konuşma Başlatıcıları (Narenciye):" Foreground="#8FA3BF" FontSize="11" FontWeight="Bold" Margin="0,0,0,8" HorizontalAlignment="Left"/>
+                                <Button Click="QuickVoice_Click" Content="🍋 Limonda uçkurutan hastalığı tedavisi nedir?" Style="{StaticResource QuickChipStyle}" Margin="0,0,0,6" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"/>
+                                <Button Click="QuickVoice_Click" Content="🍊 Akdeniz meyve sineği için hangi ilacı önerirsin?" Style="{StaticResource QuickChipStyle}" Margin="0,0,0,6" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"/>
+                                <Button Click="QuickVoice_Click" Content="🐛 Turunçgil unlu biti ve karaballık nasıl geçer?" Style="{StaticResource QuickChipStyle}" Margin="0,0,0,6" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"/>
+                                <Button Click="QuickVoice_Click" Content="🌳 Ağaç gövdesinde zamk akıntısı var, ne yapmalıyım?" Style="{StaticResource QuickChipStyle}" Margin="0,0,0,6" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"/>
+                                <Button Click="QuickVoice_Click" Content="🌾 300 limon ağacımdan kaç ton rekolte çıkar?" Style="{StaticResource QuickChipStyle}" Margin="0,0,0,6" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"/>
+                                <Button Click="QuickVoice_Click" Content="🍊 500 portakal ağacı verimi ve geliri ne olur?" Style="{StaticResource QuickChipStyle}" Margin="0,0,0,6" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"/>
+                                <Button Click="QuickVoice_Click" Content="💧 Limon ve portakalları ne sıklıkla sulamalıyım?" Style="{StaticResource QuickChipStyle}" Margin="0,0,0,6" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"/>
+                                <Button Click="QuickVoice_Click" Content="🌸 Nasılsın Nova, günün nasıl geçiyor?" Style="{StaticResource QuickChipStyle}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- RIGHT: Dialogue Transcript Stream -->
+                        <Border Grid.Column="2" Background="#0C1B33" CornerRadius="18" BorderBrush="#183359" BorderThickness="1.5" Padding="20">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid Grid.Row="0" Margin="0,0,0,12">
+                                    <TextBlock Text="💬 Karşılıklı Soru-Cevap Akışı" FontSize="14" FontWeight="Bold" Foreground="#ECEFF4"/>
+                                    <Button HorizontalAlignment="Right" Click="ClearVoiceDialogue_Click"
+                                            Background="Transparent" BorderThickness="0" Foreground="#7E93AA" FontSize="11" Cursor="Hand" Content="Akışı Temizle"/>
+                                </Grid>
+
+                                <ScrollViewer Grid.Row="1" x:Name="VoiceDialogueScrollViewer" VerticalScrollBarVisibility="Auto">
+                                    <StackPanel x:Name="VoiceDialoguePanel" Margin="0,4"/>
+                                </ScrollViewer>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <!-- Bottom Input for Voice Chat -->
+                    <Border Grid.Row="2" Background="#0C1B33" CornerRadius="16" BorderBrush="#183359" BorderThickness="1.5" Padding="14,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox x:Name="LiveVoiceInputBox"
+                                     Style="{StaticResource ModernTextBoxStyle}"
+                                     Background="#07101C"
+                                     BorderThickness="1"
+                                     BorderBrush="#183359"
+                                     Padding="12,8"
+                                     FontSize="13"
+                                     Foreground="#ECEFF4"
+                                     VerticalAlignment="Center"
+                                     KeyDown="LiveVoiceInputBox_KeyDown"
+                                     Tag="Sormak istediğinizi yazın veya Enter'a basın..."/>
+
+                            <Button Grid.Column="1" Click="SendLiveVoiceMessage_Click"
+                                    Background="#00E676" Width="100" Height="40" Margin="10,0,0,0" Cursor="Hand">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="10">
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <TextBlock Text="Konuş 🎙️" Foreground="#04121E" FontWeight="Bold" FontSize="12"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+
+            <!-- ==================== VIEW 3: REKOLTE & VERİM HESAPLAMA ==================== -->
+            <Grid x:Name="RekolteView" Visibility="Collapsed" Background="#081220">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid Margin="32,24">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Header -->
+                        <Grid Grid.Row="0" Margin="0,0,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="🌾 Ortalama Ağaç ve Meyve Sayısı ile Rekolte &amp; Gelir Hesaplayıcı" 
+                                           FontSize="20" FontWeight="Bold" Foreground="#ECEFF4"/>
+                                <TextBlock Text="Bahçenizdeki tahmini verimi, net tonajı, gereken kasa adedini ve beklenen ciroyu anlık simüle edin." 
+                                           FontSize="12" Foreground="#7E93AA" Margin="0,4,0,0"/>
+                            </StackPanel>
+
+                            <Button Grid.Column="1" Click="BackToAnaliz_Click"
+                                    Background="#102544" BorderBrush="#1E3E6B" BorderThickness="1.5"
+                                    Foreground="#ECEFF4" FontWeight="Bold" FontSize="12" Padding="16,8" Cursor="Hand">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
+                                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="12" Padding="{TemplateBinding Padding}">
+                                            <TextBlock Text="← Saha Analizine Dön"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Grid>
+
+                        <!-- Content Grid: Left Controls / Right Results -->
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="420"/>
+                                <ColumnDefinition Width="24"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- LEFT: PARAMETERS CARD -->
+                            <Border Grid.Column="0" Background="#0C1B33" CornerRadius="16" BorderBrush="#183359" BorderThickness="1.5" Padding="22">
+                                <StackPanel>
+                                    <TextBlock Text="⚙️ Bahçe ve Ağaç Parametreleri" FontSize="15" FontWeight="Bold" Foreground="#00E676" Margin="0,0,0,16"/>
+
+                                    <!-- Crop Type -->
+                                    <TextBlock Text="Meyve Türü Seçimi:" Foreground="#8FA3BF" FontSize="11" FontWeight="SemiBold"/>
+
+                                    <!-- Quick Visual Toggle Buttons for Citrus Crop -->
+                                    <StackPanel Orientation="Horizontal" Margin="0,5,0,8">
+                                        <Button x:Name="YieldSelectLimonBtn" Click="YieldSelectCrop_Click" Tag="limon"
+                                                Background="#2E2408" BorderBrush="#FFD600" BorderThickness="1.5"
+                                                Padding="14,6" Margin="0,0,8,0" Cursor="Hand" ToolTip="Limon rekolte ve gelir hesabını seç">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
+                                                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10" Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="🍋" FontSize="13" Margin="0,0,6,0"/>
+                                                <TextBlock x:Name="YieldLimonBtnText" Text="🍋 Limon Bahçesi" Foreground="#FFD600" FontSize="12" FontWeight="Bold"/>
+                                            </StackPanel>
+                                        </Button>
+
+                                        <Button x:Name="YieldSelectPortakalBtn" Click="YieldSelectCrop_Click" Tag="portakal"
+                                                Background="#102544" BorderBrush="#1C3D68" BorderThickness="1.2"
+                                                Padding="14,6" Cursor="Hand" ToolTip="Portakal rekolte ve gelir hesabını seç">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
+                                                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10" Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="🍊" FontSize="13" Margin="0,0,6,0"/>
+                                                <TextBlock x:Name="YieldPortakalBtnText" Text="🍊 Portakal Bahçesi" Foreground="#8899AA" FontSize="12" FontWeight="SemiBold"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+
+                                    <!-- Styled ComboBox (Only Limon & Portakal, Crystal Clear Visibility) -->
+                                    <ComboBox x:Name="YieldCropCombo" Style="{StaticResource ModernCitrusComboBoxStyle}"
+                                              Margin="0,0,0,14" Height="40" SelectionChanged="YieldInput_Changed"/>
+
+                                    <!-- Tree Count Slider -->
+                                    <Grid>
+                                        <TextBlock Text="Toplam Narenciye Ağaç Sayısı:" Foreground="#8FA3BF" FontSize="11" FontWeight="SemiBold"/>
+                                        <TextBlock x:Name="TreeCountValueText" Text="300 Ağaç" Foreground="#00E676" FontWeight="Bold" FontSize="12" HorizontalAlignment="Right"/>
+                                    </Grid>
+                                    <Slider x:Name="TreeCountSlider" Style="{StaticResource SliderInputStyle}"
+                                            Minimum="10" Maximum="2500" Value="300" TickFrequency="25" ValueChanged="YieldInput_Changed"/>
+
+                                    <!-- Fruits Per Tree Slider -->
+                                    <Grid>
+                                        <TextBlock Text="Ağaç Başına Ortalama Meyve Adedi:" Foreground="#8FA3BF" FontSize="11" FontWeight="SemiBold"/>
+                                        <TextBlock x:Name="FruitPerTreeValueText" Text="650 Meyve" Foreground="#00E676" FontWeight="Bold" FontSize="12" HorizontalAlignment="Right"/>
+                                    </Grid>
+                                    <Slider x:Name="FruitPerTreeSlider" Style="{StaticResource SliderInputStyle}"
+                                            Minimum="50" Maximum="1400" Value="650" TickFrequency="25" ValueChanged="YieldInput_Changed"/>
+
+                                    <!-- Average Fruit Weight (Grams) -->
+                                    <Grid>
+                                        <TextBlock Text="Ortalama Meyve Ağırlığı (Gram):" Foreground="#8FA3BF" FontSize="11" FontWeight="SemiBold"/>
+                                        <TextBlock x:Name="FruitWeightValueText" Text="125 g" Foreground="#3498DB" FontWeight="Bold" FontSize="12" HorizontalAlignment="Right"/>
+                                    </Grid>
+                                    <Slider x:Name="FruitWeightSlider" Style="{StaticResource SliderInputStyle}"
+                                            Minimum="60" Maximum="350" Value="125" TickFrequency="5" ValueChanged="YieldInput_Changed"/>
+
+                                    <!-- Price Per Kg -->
+                                    <Grid>
+                                        <TextBlock Text="Beklenen Satış Fiyatı (TL/kg):" Foreground="#8FA3BF" FontSize="11" FontWeight="SemiBold"/>
+                                        <TextBlock x:Name="PricePerKgValueText" Text="26 TL/kg" Foreground="#F39C12" FontWeight="Bold" FontSize="12" HorizontalAlignment="Right"/>
+                                    </Grid>
+                                    <Slider x:Name="PricePerKgSlider" Style="{StaticResource SliderInputStyle}"
+                                            Minimum="5" Maximum="80" Value="26" TickFrequency="1" ValueChanged="YieldInput_Changed"/>
+
+                                    <!-- Action Buttons -->
+                                    <Button Click="SpeakYield_Click" Height="42" Margin="0,10,0,8" Cursor="Hand">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="#16382B" BorderBrush="#00E676" BorderThickness="1.2" CornerRadius="10">
+                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                        <TextBlock Text="🔊" FontSize="14" Margin="0,0,8,0"/>
+                                                        <TextBlock Text="Rekolteyi MersiNova'dan Dinle" FontWeight="Bold" Foreground="#00E676" FontSize="12"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
+
+                                    <Button Click="SaveYieldToSql_Click" Height="42" Cursor="Hand">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="#00E676" CornerRadius="10">
+                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                        <TextBlock Text="💾" FontSize="14" Margin="0,0,8,0"/>
+                                                        <TextBlock Text="Bu Rekolteyi SQL'e Kaydet" FontWeight="Bold" Foreground="#04121E" FontSize="12"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- RIGHT: CALCULATED KPI DASHBOARD -->
+                            <StackPanel Grid.Column="2">
+
+                                <!-- Top Headline Banner -->
+                                <Border Background="#102544" CornerRadius="14" Padding="20" Margin="0,0,0,16" BorderBrush="#1A3B66" BorderThickness="1">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <TextBlock Text="TAHMİNİ NET REKOLTE" Foreground="#7E93AA" FontSize="11" FontWeight="Bold"/>
+                                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                                <TextBlock x:Name="NetTonajKpiText" Text="5.65 Ton" Foreground="#00E676" FontSize="28" FontWeight="ExtraBold"/>
+                                                <TextBlock x:Name="GrossTonajSubText" Text="(Brüt: 6.08 Ton)" Foreground="#7E93AA" FontSize="14" VerticalAlignment="Bottom" Margin="10,0,0,4"/>
+                                            </StackPanel>
+                                            <TextBlock Text="%7 standart fire/ıskarta payı düşülmüştür." Foreground="#5A718C" FontSize="11" Margin="0,2,0,0"/>
+                                        </StackPanel>
+
+                                        <Border Grid.Column="1" Background="#16382B" CornerRadius="12" Padding="16,8" VerticalAlignment="Center">
+                                            <StackPanel HorizontalAlignment="Center">
+                                                <TextBlock Text="TAHMİNİ CİRO" Foreground="#7E93AA" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                                <TextBlock x:Name="EstimatedRevenueKpiText" Text="₺158.200 TL" Foreground="#00E676" FontSize="20" FontWeight="ExtraBold" HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Grid of Detailed Cards -->
+                                <Grid Margin="0,0,0,16">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="14"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Card 1: Toplam Meyve Adedi -->
+                                    <Border Grid.Row="0" Grid.Column="0" Background="#0C1B33" CornerRadius="12" Padding="16" Margin="0,0,0,14" BorderBrush="#183359" BorderThickness="1">
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                                <TextBlock Text="🍏" FontSize="16" Margin="0,0,8,0"/>
+                                                <TextBlock Text="Toplam Meyve Adedi" Foreground="#7E93AA" FontSize="11" FontWeight="Bold"/>
+                                            </StackPanel>
+                                            <TextBlock x:Name="TotalFruitCountText" Text="45.000 Adet" Foreground="#ECEFF4" FontSize="18" FontWeight="Bold"/>
+                                            <TextBlock Text="Ağaç sayısı × Ağaç başı meyve" Foreground="#5A718C" FontSize="10" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- Card 2: Kasa İhtiyacı -->
+                                    <Border Grid.Row="0" Grid.Column="2" Background="#0C1B33" CornerRadius="12" Padding="16" Margin="0,0,0,14" BorderBrush="#183359" BorderThickness="1">
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                                <TextBlock Text="🧺" FontSize="16" Margin="0,0,8,0"/>
+                                                <TextBlock Text="Gereken Kasa Sayısı" Foreground="#7E93AA" FontSize="11" FontWeight="Bold"/>
+                                            </StackPanel>
+                                            <TextBlock x:Name="CrateCountText" Text="~283 Standart Kasa" Foreground="#3498DB" FontSize="18" FontWeight="Bold"/>
+                                            <TextBlock Text="20 kg standart sebze/meyve kasası" Foreground="#5A718C" FontSize="10" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- Card 3: Haftalık Sulama İhtiyacı -->
+                                    <Border Grid.Row="1" Grid.Column="0" Background="#0C1B33" CornerRadius="12" Padding="16" BorderBrush="#183359" BorderThickness="1">
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                                <TextBlock Text="💧" FontSize="16" Margin="0,0,8,0"/>
+                                                <TextBlock Text="Haftalık Sulama İhtiyacı" Foreground="#7E93AA" FontSize="11" FontWeight="Bold"/>
+                                            </StackPanel>
+                                            <TextBlock x:Name="WeeklyWaterText" Text="~10.500 Litre / Hafta" Foreground="#3498DB" FontSize="17" FontWeight="Bold"/>
+                                            <TextBlock Text="Ağaç başı ortalama 35 L damla sulama" Foreground="#5A718C" FontSize="10" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- Card 4: Hasat İşgücü & Gün -->
+                                    <Border Grid.Row="1" Grid.Column="2" Background="#0C1B33" CornerRadius="12" Padding="16" BorderBrush="#183359" BorderThickness="1">
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                                <TextBlock Text="👨‍🌾" FontSize="16" Margin="0,0,8,0"/>
+                                                <TextBlock Text="Tahmini Hasat Süresi" Foreground="#7E93AA" FontSize="11" FontWeight="Bold"/>
+                                            </StackPanel>
+                                            <TextBlock x:Name="LaborDaysText" Text="4 İşçi ile ~4 Gün" Foreground="#F39C12" FontSize="17" FontWeight="Bold"/>
+                                            <TextBlock Text="1 ton hasat ≈ 1.6 adam-gün kabulü" Foreground="#5A718C" FontSize="10" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+
+                                <!-- Spoken Advice Banner -->
+                                <Border Background="#102544" CornerRadius="12" Padding="16" BorderBrush="#1A3B66" BorderThickness="1">
+                                    <StackPanel>
+                                        <TextBlock Text="🤖 Nova'nın Rekolte Yorumu:" Foreground="#00E676" FontSize="12" FontWeight="Bold" Margin="0,0,0,6"/>
+                                        <TextBlock x:Name="NovaYieldSummaryText" 
+                                                   Text="300 ağaç ve ortalama 150 meyve ile parselinizden yaklaşık 5.65 ton net ürün elde edilmesi beklenmektedir. Hasat öncesi potasyum desteği meyve iriliğini ve tonajı %8 artırabilir." 
+                                                   Foreground="#ECEFF4" FontSize="12.5" TextWrapping="Wrap" LineHeight="19"/>
+                                    </StackPanel>
+                                </Border>
+
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </ScrollViewer>
+            </Grid>
+
+            <!-- ==================== VIEW 4: SQL DATABASE MANAGEMENT ==================== -->
+            <Grid x:Name="SqlDatabaseView" Visibility="Collapsed" Background="#081220">
+                <Grid Margin="28,24">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- SQL Header -->
+                    <Grid Grid.Row="0" Margin="0,0,0,18">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="📊 MersiNova Tarla &amp; Rekolte SQL Veritabanı" FontSize="20" FontWeight="Bold" Foreground="#ECEFF4"/>
+                            <TextBlock x:Name="SqlDbPathText" Text="SQLite Veritabanı: mersinova_tarla.db" FontSize="12" Foreground="#3498DB" Margin="0,4,0,0"/>
+                        </StackPanel>
+                        <Button Grid.Column="1" Click="BackToAnaliz_Click"
+                                Background="#102544" BorderBrush="#1E3E6B" BorderThickness="1.5"
+                                Foreground="#ECEFF4" FontWeight="Bold" FontSize="13" Padding="18,8" Cursor="Hand">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
+                                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="12" Padding="{TemplateBinding Padding}">
+                                        <TextBlock Text="← Analiz Ekranına Dön"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </Grid>
+
+                    <!-- Query Bar -->
+                    <Border Grid.Row="1" Background="#0C1B33" CornerRadius="12" Padding="14" Margin="0,0,0,16" BorderBrush="#183359" BorderThickness="1.5">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="SQL Sorgusu:" Foreground="#00E676" FontWeight="Bold" FontSize="12" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBox Grid.Column="1" x:Name="SqlQueryBox"
+                                     Text="SELECT Id, TarlaAdi, UrunTuru, OlgunlukDurumu, OlgunlukYuzdesi, SulamaGunu, IlacGubreGunu, Tarih FROM TarlaAnalizleri ORDER BY Id DESC;"
+                                     Background="#07101C" Foreground="#ECEFF4" FontFamily="Consolas" FontSize="12"
+                                     BorderBrush="#1E3E6B" BorderThickness="1" Padding="10,6" Margin="0,0,12,0"/>
+                            <Button Grid.Column="2" Click="ExecuteSql_Click"
+                                    Background="#00E676" Foreground="#04121E" FontWeight="Bold" FontSize="12"
+                                    Padding="16,8" Cursor="Hand">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                            <TextBlock Text="▶ Çalıştır"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <!-- Real DataGrid -->
+                    <Border Grid.Row="2" Background="#0C1B33" CornerRadius="12" BorderBrush="#183359" BorderThickness="1.5" Padding="2">
+                        <DataGrid x:Name="SqlRecordsDataGrid"
+                                  AutoGenerateColumns="True"
+                                  IsReadOnly="True"
+                                  Background="#0A182C"
+                                  Foreground="#ECEFF4"
+                                  RowBackground="#0E1E36"
+                                  AlternatingRowBackground="#122542"
+                                  GridLinesVisibility="Horizontal"
+                                  HorizontalGridLinesBrush="#1A3B66"
+                                  BorderThickness="0"
+                                  FontSize="12"
+                                  HeadersVisibility="Column"/>
+                    </Border>
+                </Grid>
+            </Grid>
+
+            <!-- ==================== VIEW 5: CANLI METEOROLOJİ & 7 GÜNLÜK ZİRAİ HAVA DURUMU ==================== -->
+            <Grid x:Name="WeatherView" Visibility="Collapsed" Margin="24,14,24,18">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/> <!-- Header & Action Bar -->
+                    <RowDefinition Height="Auto"/> <!-- Current Live Hero Card -->
+                    <RowDefinition Height="*"/>    <!-- 7-Day Forecast Cards & Agricultural Guidance -->
+                </Grid.RowDefinitions>
+
+                <!-- 1. Header & Actions -->
+                <Border Grid.Row="0" Background="#0C1B33" BorderBrush="#1C3D68" BorderThickness="1.5" CornerRadius="16" Padding="20,12" Margin="0,0,0,14">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="🌤️" FontSize="20" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Meteoroloji Genel Müdürlüğü &amp; Radar Zirai Hava Durumu" 
+                                           Foreground="#ECEFF4" FontSize="16" FontWeight="ExtraBold" VerticalAlignment="Center"/>
+                                <Border Background="#103622" CornerRadius="6" Padding="8,3" Margin="12,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="● Canlı Radar &amp; Uydu Verisi" Foreground="#00E676" FontSize="10.5" FontWeight="Bold"/>
+                                </Border>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                <TextBlock Text="📍 Seçili Parsel:" Foreground="#7E93AA" FontSize="11.5" Margin="0,0,6,0"/>
+                                <TextBlock x:Name="WeatherViewLocationText" Text="Mersin / Erdemli - Limonlu" Foreground="#FFD600" FontSize="11.5" FontWeight="Bold" Margin="0,0,12,0"/>
+                                <TextBlock x:Name="WeatherViewCoordsText" Text="🌐 36.6025° K, 34.3142° D" Foreground="#88A0B8" FontSize="11"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Action Buttons -->
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button Click="RefreshWeather_Click"
+                                    Background="#142C4E" BorderBrush="#00E676" BorderThickness="1.2"
+                                    Padding="14,8" Margin="0,0,8,0" Cursor="Hand" ToolTip="Meteoroloji Verilerini Yenile">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
+                                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10" Padding="{TemplateBinding Padding}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="🔄" FontSize="12" Margin="0,0,6,0"/>
+                                                <TextBlock Text="Verileri Güncelle" Foreground="#00E676" FontSize="11.5" FontWeight="Bold"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+
+                            <Button Click="SpeakWeatherReport_Click"
+                                    Background="#221020" BorderBrush="#FF5252" BorderThickness="1.2"
+                                    Padding="14,8" Cursor="Hand" ToolTip="Sesli Asistan Nova 7 Günlük Zirai Raporu Okusun">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
+                                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10" Padding="{TemplateBinding Padding}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="🗣️" FontSize="12" Margin="0,0,6,0"/>
+                                                <TextBlock Text="Hava Durumunu Seslendir" Foreground="#FF8A80" FontSize="11.5" FontWeight="Bold"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- 2. Current Live Weather Hero Card -->
+                <Border Grid.Row="1" Background="#0A182C" BorderBrush="#18365D" BorderThickness="1.5" CornerRadius="18" Padding="24,18" Margin="0,0,0,14">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="280"/> <!-- Big Temp & Weather Icon -->
+                            <ColumnDefinition Width="*"/>   <!-- Live Metric Badges (Humidity, Wind, Rain, Risk) -->
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Left: Live Weather Icon & Temp -->
+                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock x:Name="HeroWeatherIcon" Text="☀️" FontSize="48" Margin="0,0,16,0" VerticalAlignment="Center"/>
+                                <StackPanel VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock x:Name="HeroTempText" Text="22.4" FontSize="38" FontWeight="ExtraBold" Foreground="#ECEFF4"/>
+                                        <TextBlock Text="°C" FontSize="24" FontWeight="Bold" Foreground="#00E676" VerticalAlignment="Top" Margin="2,4,0,0"/>
+                                    </StackPanel>
+                                    <TextBlock x:Name="HeroWeatherDesc" Text="Açık &amp; Güneşli" Foreground="#FFD600" FontSize="13" FontWeight="Bold"/>
+                                </StackPanel>
+                            </StackPanel>
+                            <TextBlock Text="🌾 Narenciye İçin Elverişli İklim Şartları" Foreground="#7E93AA" FontSize="11" Margin="2,6,0,0"/>
+                        </StackPanel>
+
+                        <!-- Right: 4 Metrics Grid -->
+                        <UniformGrid Grid.Column="1" Columns="4" VerticalAlignment="Center">
+                            <!-- Humidity -->
+                            <Border Background="#0E233E" CornerRadius="12" Padding="14,12" Margin="4,0" BorderBrush="#16385A" BorderThickness="1">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="💧 Bağıl Nem" Foreground="#88A0B8" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="HeroHumidityText" Text="%58" Foreground="#38BDF8" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                    <TextBlock Text="Normal Seviye" Foreground="#5A718C" FontSize="9.5" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Wind -->
+                            <Border Background="#0E233E" CornerRadius="12" Padding="14,12" Margin="4,0" BorderBrush="#16385A" BorderThickness="1">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="💨 Rüzgar Hızı" Foreground="#88A0B8" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="HeroWindText" Text="12 km/s" Foreground="#00E676" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                    <TextBlock Text="Meltem / Sakin" Foreground="#5A718C" FontSize="9.5" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Rain -->
+                            <Border Background="#0E233E" CornerRadius="12" Padding="14,12" Margin="4,0" BorderBrush="#16385A" BorderThickness="1">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="🌧️ Anlık Yağış" Foreground="#88A0B8" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="HeroRainText" Text="0.0 mm" Foreground="#FFD600" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                    <TextBlock Text="Yağışsız" Foreground="#5A718C" FontSize="9.5" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Radar Risk -->
+                            <Border Background="#0E233E" CornerRadius="12" Padding="14,12" Margin="4,0" BorderBrush="#16385A" BorderThickness="1">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="⚡ Afet Radarı" Foreground="#88A0B8" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="HeroRiskText" Text="Emniyetli" Foreground="#00E676" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                    <TextBlock Text="Radar Aktif" Foreground="#5A718C" FontSize="9.5" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                        </UniformGrid>
+                    </Grid>
+                </Border>
+
+                <!-- 3. 7-Day Forecast & Agricultural Advice Cards -->
+                <Grid Grid.Row="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/> <!-- Section Title -->
+                        <RowDefinition Height="*"/>    <!-- 7 Day Cards Container -->
+                        <RowDefinition Height="Auto"/> <!-- Bottom Early Warning Guidance -->
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="📅 7 GÜNLÜK GÜN GÜN ZİRAİ TAHMİN &amp; TARIMSAL REHBER" 
+                               Foreground="#FFD600" FontSize="13" FontWeight="Bold" Margin="4,0,0,10"/>
+
+                    <!-- 7 Daily Cards Scrollable / UniformGrid -->
+                    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                        <StackPanel x:Name="DailyCardsPanel" Orientation="Horizontal"/>
+                    </ScrollViewer>
+
+                    <!-- Bottom Meteorological Alert Box -->
+                    <Border Grid.Row="2" x:Name="WeatherAdviceBorder" Background="#0A2222" BorderBrush="#00E676" BorderThickness="1.5" CornerRadius="14" Padding="16,10" Margin="0,12,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock x:Name="WeatherAdviceIcon" Text="🛡️" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock x:Name="WeatherAdviceTitle" Text="METEOROLOJİK DEĞERLENDİRME: HAVA ŞARTLARI EMNİYETLİ" Foreground="#00E676" FontSize="11" FontWeight="ExtraBold"/>
+                                <TextBlock x:Name="WeatherAdviceDetailText" 
+                                           Text="Bölgenizde dolu veya aşırı sağanak yağış riski bulunmamaktadır. Hava şartları narenciye için tamamen elverişli ve emniyetli seyretmektedir." 
+                                           Foreground="#ECEFF4" FontSize="11.5" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+
+            </Grid>
+            <!-- END VIEWS CONTAINER -->
+
+            <!-- FLOATING TOAST NOTIFICATION POPUP (OVERLAY) -->
+            <Border Grid.Row="1" x:Name="ToastPopup" HorizontalAlignment="Right" VerticalAlignment="Top"
+                    Margin="0,18,24,0" Background="#160810" BorderBrush="#FF5252" BorderThickness="1.5"
+                    CornerRadius="16" Width="430" Padding="18,16" Visibility="Collapsed" Opacity="0">
+                <Border.RenderTransform>
+                    <TranslateTransform x:Name="ToastTranslate" Y="-160"/>
+                </Border.RenderTransform>
+                <Border.Effect>
+                    <DropShadowEffect Color="#FF1744" BlurRadius="28" ShadowDepth="6" Opacity="0.55"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/> <!-- Toast Header -->
+                        <RowDefinition Height="Auto"/> <!-- Toast Body / Warning Cards -->
+                        <RowDefinition Height="Auto"/> <!-- 10-Second Auto-dismiss Countdown -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Toast Header -->
+                    <Grid Grid.Row="0" Margin="0,0,0,12">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Border Background="#4A1218" CornerRadius="6" Padding="6,4" Margin="0,0,8,0">
+                                <TextBlock Text="🚨" FontSize="14"/>
+                            </Border>
+                            <StackPanel>
+                                <TextBlock Text="ÖRNEK UYARILANDIRMA BİLDİRİMİ" Foreground="#FF5252" FontSize="11.5" FontWeight="ExtraBold"/>
+                                <TextBlock Text="Zirai Radar &amp; Bahçe Koruma Asistanı" Foreground="#8899A6" FontSize="10"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <!-- MersiNova'yı Dinle Butonu -->
+                            <Button Click="SpeakSampleToast_Click" Margin="0,0,6,0"
+                                    Background="#260C14" BorderBrush="#FF5252" BorderThickness="1" 
+                                    Padding="7,3" Cursor="Hand" ToolTip="MersiNova'yı Dinle">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
+                                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="🔊" FontSize="10" Margin="0,0,3,0"/>
+                                                <TextBlock Text="MersiNova'yı Dinle" Foreground="#FF8A80" FontSize="10" FontWeight="Bold"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+
+                            <!-- Kapat Butonu -->
+                            <Button Click="CloseToast_Click" 
+                                    Width="24" Height="24" Background="#260C14" BorderThickness="0" Cursor="Hand" ToolTip="Kapat">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="12">
+                                            <TextBlock Text="✕" Foreground="#FF8A80" FontSize="11" FontWeight="Bold" 
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Toast Body -->
+                    <StackPanel Grid.Row="1">
+                        <!-- 1. Anlık Hava Değişimi Kartı -->
+                        <Border Background="#2A0E16" CornerRadius="8" Padding="11,8" Margin="0,0,0,8" BorderBrush="#501620" BorderThickness="1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="🌪️" FontSize="18" Margin="0,2,10,0" VerticalAlignment="Top"/>
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Text="ANLIK HAVA DEĞİŞİMİ TESPİTİ" Foreground="#FF8A80" FontSize="11.5" FontWeight="Bold"/>
+                                    <TextBlock Text="Önümüzdeki 90 dakika içinde şiddetli rüzgar (55 km/s) ve ani fırtına / sağanak geçişi beklenmektedir." 
+                                               Foreground="#ECEFF4" FontSize="11" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <!-- 2. Bahçeye Zarar Veren Konular & Alınacak Tedbirler Kartı -->
+                        <Border Background="#241B08" CornerRadius="8" Padding="11,8" Margin="0,0,0,10" BorderBrush="#573D0B" BorderThickness="1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="🍋" FontSize="18" Margin="0,2,10,0" VerticalAlignment="Top"/>
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Text="BAHÇEYE ZARAR VEREN RİSKLER &amp; TEDBİR" Foreground="#FFD54F" FontSize="11.5" FontWeight="Bold"/>
+                                    <TextBlock Text="Şiddetli rüzgar ve dolu meyve dökümüne ve kabuk yaralanmasına yol açabilir. Dolu tüllerini açınız, rüzgar kıranları kontrol ediniz; yağış sonrası hemen koruyucu bakır uygulaması yapınız." 
+                                               Foreground="#ECEFF4" FontSize="11" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <!-- Konum & Otomatik Kapanma Bilgisi -->
+                        <Grid Margin="0,0,0,8">
+                            <TextBlock x:Name="ToastLocationText" Text="📍 Parsel: Mersin / Erdemli" 
+                                       Foreground="#81D4FA" FontSize="10.5" FontWeight="SemiBold"/>
+                            <TextBlock x:Name="ToastCountdownText" Text="⏱️ 10 saniye sonra kapanacak" 
+                                       Foreground="#FF8A80" FontSize="10.5" FontWeight="Bold" HorizontalAlignment="Right"/>
+                        </Grid>
+                    </StackPanel>
+
+                    <!-- Progress bar for 10-second countdown -->
+                    <Border Grid.Row="2" Background="#260C14" CornerRadius="3" Height="4" ClipToBounds="True">
+                        <ProgressBar x:Name="ToastCountdownBar" Height="4" Minimum="0" Maximum="10" Value="10"
+                                     Foreground="#FF5252" Background="Transparent" BorderThickness="0"/>
+                    </Border>
+                </Grid>
+            </Border>
+
+        </Grid>
+        <!-- END MAIN CONTENT AREA -->
+    </Grid>
+    <!-- END ROOT GRID -->
+</Window>
